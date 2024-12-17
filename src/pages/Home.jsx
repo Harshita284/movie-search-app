@@ -97,16 +97,16 @@ export default function Home() {
                     <CategoryListing category_slug={category_slug} data={Categories} />                
             </div>
             <div className='col-span-3'>
-            
-                
-            <div className='flex gap-2 p-3 mt-3 justify-end text-center mb-2 bg-[#34495e] text-white text-lg'>
+                   
+            <div className='flex gap-2 p-3 justify-end text-center mb-2 bg-[#34495e] text-white text-lg'>
                <IoGridOutline  className={`${listing_mode == 0 && 'text-yellow-500'}`} onClick={() => setListingMode(0)} />
                <FaThList className={`${listing_mode == 1 && 'text-yellow-500'}`} onClick={() => setListingMode(1)} />
             </div>
                 <ProductListing listing_mode={listing_mode} data={Products}/>
+                <Pagination current_page={page} pageHandler={pageHandler} limit={limit} total_records={totalProducts} />  
             </div>   
 
-            <Pagination current_page={page} pageHandler={pageHandler} limit={limit} total_records={totalProducts} />         
+                   
         </div>
     </Container>
   )
