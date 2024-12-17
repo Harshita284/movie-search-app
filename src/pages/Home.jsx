@@ -113,75 +113,94 @@ export default function Home() {
 const ProductListing = ({data, listing_mode}) => {
     
     const { addtoCart } = useContext(Context);
-    return (<div className={`grid ${listing_mode == 0 ? 'grid-cols-3' : 'grid-cols-1'}  gap-2`}>
-        {
-            data.map(
-                (prod) => {
-                   return(
-                    <>
-                    <div className={` border group relative p-3 ms-3 ${listing_mode === 1 ? 'flex items-center' : ''}`} key={prod.id}>
-                      <div className={`${listing_mode === 0 ? 'aspect-h-1 aspect-w-1': 'w-1/3'
-                      }w-full overflow-hidden rounded-md bg-gray-200 lg:aspect-none group-hover:opacity-75 lg:h-80 `}>
-                        <Link to={`/product-details/${prod.id}`}>
-                            <img src={prod.thumbnail}
-                            alt={`${prod.title} thumbnail`} className='h-full w-full object-cover object-center lg:h-full lg:w-full'/>
-
-                        </Link>     
-                            </div>
-                       
-
-                      <div className={`mt-4 ${listing_mode === 1 ? 'ml-4 flex-1' : 'flex justify-between'}`}>
-                        <div>
-                        <h3 className="text-lg font-semibold text-gray-700">
-                        <Link to={`/product-details/${prod.id}`}><span aria-hidden="true" className=" inset-0" />{prod.title}</Link>                       
-                        </h3>
-                        {
-                            listing_mode === 1 
-                            &&
-                            <p>{prod.description}</p>
-                        }
-                        <p className="mt-1 text-sm text-gray-500">{prod.brand}</p>
-                        <button onClick={() => addtoCart(prod.id)} className='hover:bg-blue-600 hover:text-white border px-4 py-1 my-3'> +Cart</button>
-                        </div>
-                      <p className="text-sm font-medium text-gray-900">$ {prod.price}</p>
-                      {
-                        listing_mode === 1
-                        &&
-                        <p>{prod.availabilityStatus}</p>
-                      }
-                      </div>
-                    </div>  
-                    </>
-                   )
-                }
-            )
-        }
-
-    </div>
+    return (
+        <div className={`
+            grid ${listing_mode === 0 ? 'grid-cols-1 sm:grid-cols-2 md:grid-cols-3' : 'grid-cols-1'
+        } gap-2 sm:gap-4`}
+      >
+        {data.map((prod) => {
+          return (
+            <div
+              key={prod.id}
+              className={`border group relative p-3 ${
+                listing_mode === 1 ? 'flex items-center' : ''
+              }`}
+            >
+              {/* Image Section */}
+              <div
+                className={`${
+                  listing_mode === 0 ? 'aspect-w-1 aspect-h-1' : 'w-1/3'
+                } w-full overflow-hidden rounded-md bg-gray-200 group-hover:opacity-75`}
+              >
+                <Link to={`/product-details/${prod.id}`}>
+                  <img
+                    src={prod.thumbnail}
+                    alt={`${prod.title} thumbnail`}
+                    className="h-full w-full object-cover object-center"
+                  />
+                </Link>
+              </div>
+      
+              {/* Product Details */}
+              <div
+                className={`mt-4 ${
+                  listing_mode === 1 ? 'ml-4 flex-1' : 'flex justify-between'
+                }`}
+              >
+                <div>
+                  <h3 className="text-lg font-semibold text-gray-700">
+                    <Link to={`/product-details/${prod.id}`}>
+                      <span aria-hidden="true" className="inset-0" />
+                      {prod.title}
+                    </Link>
+                  </h3>
+                  {listing_mode === 1 && <p className="mt-1 text-sm text-gray-500">{prod.description}</p>}
+                  <p className="mt-1 text-sm text-gray-500">{prod.brand}</p>
+                  <button
+                    onClick={() => addtoCart(prod.id)}
+                    className="hover:bg-blue-600 hover:text-white border px-4 py-1 mt-2 text-sm transition-colors"
+                  >
+                    + Cart
+                  </button>
+                </div>
+                <p className="text-sm font-medium text-gray-900">$ {prod.price}</p>
+                {listing_mode === 1 && (
+                  <p className="mt-1 text-sm text-gray-500">{prod.availabilityStatus}</p>
+                )}
+              </div>
+            </div>
+          );
+        })}
+        </div>
+      
     )
 }
 
 const CategoryListing = ({data,category_slug}) => {
     return(
-        <ul>
-
-                <li className={`text-gray-700 border p-2 ${category_slug == undefined && 'bg-blue-600 text-white'}`}>
-                    <Link to='/'>
-                        All
-                    </Link>
+        <ul className="flex flex-wrap justify-center gap-2 sm:gap-4">
+            <li
+                className={`text-gray-700 border p-1 sm:p-2 rounded cursor-pointer ${
+                category_slug === undefined && 'bg-blue-600 text-white'
+                }`}
+            >
+                <Link to="/">All</Link>
+            </li>
+            {data.map((item, index) => {
+                return (
+                <li
+                    className={`border p-1 sm:p-2 rounded cursor-pointer ${
+                    category_slug === item.slug && '!bg-blue-600 text-white'
+                    }`}
+                    key={index}
+                >
+                    <Link to={`/${item.slug}`}>{item.name}</Link>
                 </li>
-            {
-               data.map(
-                    (item,index) => {
-                          return <li className={`${category_slug == item.slug && '!bg-blue-600 text-white'} border p-2`} key={index}>
-                                   <Link to={`/${item.slug}`}>
-                                     {item.name}
-                                   </Link>
-                                 </li>
-                    }
-                )
-            }
+                );
+            })}
         </ul>
+
+
     )
 
 }
@@ -198,8 +217,9 @@ const Pagination = ({current_page,pageHandler,total_records,limit}) => {
                 <li key={i}>
                 <span onClick={() => pageHandler(i)}
                 href="#"
-                className={`curser-pointer flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white ${i==current_page && '!bg-blue-600 text-white'}`} 
-                >
+                className={`cursor-pointer flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 hover:text-gray-700 
+                dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 
+                dark:hover:bg-gray-700 dark:hover:text-white ${i == current_page && '!bg-blue-600 text-white'} sm:px-4 sm:h-9 lg:px-5 lg:h-10`}>
                {i + 1}
                 </span>
             </li>
@@ -209,31 +229,30 @@ const Pagination = ({current_page,pageHandler,total_records,limit}) => {
     return(
         <>
             
-            <nav aria-label="Page navigation example my-4 ">
-                <ul className="inline-flex -space-x-px text-sm">
-                <li>
+            <nav aria-label="Page navigation" className="my-4">
+                <ul className="flex flex-wrap justify-center items-center -space-x-px text-xs sm:text-sm">
+                    <li>
                     <span
-                     style={{pointerEvents: current_page==0 && 'none'}}
-                    onClick={() => pageHandler(current_page-1)}
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        style={{ pointerEvents: current_page === 0 && 'none' }}
+                        onClick={() => pageHandler(current_page - 1)}
+                        className="flex items-center justify-center px-2 sm:px-3 h-8 sm:h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                    Previous
+                        Previous
                     </span>
-                </li>
-                {pageElem}               
-                <li>
+                    </li>
+                    {pageElem}
+                    <li>
                     <span
-                        style={{pointerEvents: current_page==totalpages-1 && 'none'}}
-                    onClick={() => pageHandler(current_page+1)}
-                    href="#"
-                    className="flex items-center justify-center px-3 h-8 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                        style={{ pointerEvents: current_page === totalpages - 1 && 'none' }}
+                        onClick={() => pageHandler(current_page + 1)}
+                        className="flex items-center justify-center px-2 sm:px-3 h-8 sm:h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
                     >
-                    Next
+                        Next
                     </span>
-                </li>
+                    </li>
                 </ul>
             </nav>
+
         </>
     )
 }
